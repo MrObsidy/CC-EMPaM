@@ -1,0 +1,38 @@
+function loadPlugin(path)
+  local tmp = {}
+  setmetatable(tmp, {__index = _G})
+  local fn, err = loadfile(path, tmp)
+  if fn then
+    local ok, err = pcall(fn)
+    if not ok then error(err) end
+  else
+    error(err)
+  end
+  
+  local api = {}
+  for k, v in pairs(tmp) do
+      if k ~= "_ENV" then
+        api[k] = v
+      end
+  end
+  
+  return api
+  --thanks to CrazedProgrammer of the CC forum for providing this copy-paste template!!
+  
+end
+
+function loadPlugins()
+  local pldircon = fs.list("/empam/modules/plugins/")
+  
+  local pluginTable = {}
+  
+  for k, v in pairs(pldircon) do
+    local pluginRef = loadPlugin("/empam/modules/plugins/"..v)
+    print("Loading and initializing plugin "..pluginRef.getName())
+    
+    pluginRef.initialize()
+    table.insert(pluginTable, pluginRef)
+  end
+  
+  return pluginTable
+end
