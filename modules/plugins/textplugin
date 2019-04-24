@@ -1,0 +1,17 @@
+function initialize()
+  print("This is the initialization of "..getName())
+end
+
+function getName()
+  return "TestPlugin"
+end
+
+function printHelp()
+  print("Helpidy help")
+end
+
+function execute(args)
+  print("You entered: "..args)
+end
+
+
