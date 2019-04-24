@@ -1,0 +1,96 @@
+--EMPaM by MrObsidy
+--Copyright 2019 - This piece of software
+--is freely available under the terms of
+--the GNU General Public License v3.
+
+local appBaseInfo = {
+  ["minCOSV"] = "CraftOS 1.5",
+  ["author"] = "MrObsidy",
+  ["loadedModules"] = {},
+  ["progVer"] = "0.1.0",
+  ["name"] = "EMPaM - Extensible Modular Packet Manager",
+}
+
+local args = {...}
+
+local function printUsage()
+  print("Welcome to EMPaM: "..appBaseInfo.name.." version "..appBaseInfo.progVer)
+  print("You can press Ctrl-T at any time to abort")
+  print("this help display.")
+  io.read()
+  print("Commands:")
+  print("--help: print this help.")
+  print("--version: print the version.")
+  print("--install: install a package.")
+  print("--uninstall: uninstall a package.")
+  print("--update: update a package")
+  print("--addrepo: add a repository.")
+  print("--removerepo: remove a repository.")
+  print("--listrepos: list all repositories.")
+  print("--getother: get other programs, EXPERIMENTAL!")
+  print("--gather: update repository information")
+  io.read()
+  print("--install <package> installs <package> to your system. If multiple packages with that name exist, EMPaM will prompt you to tell from which repository you wish to install <package>.")
+  io.read()
+  print("--uninstall <package> uninstalls a previously installed package.")
+  io.read()
+  print("--update <package> updates package <package>. If multiple packages with that name are installed, EMPaM will prompt you to tell which one you mean. Also, if <package> is up to date, will ask you if you want to install anyways.")
+  io.read()
+  print("--addrepo <name> <url> adds a repository with the URL <url> to your repolist with the name <name>. Check the forum post to see how to properly set up repositories.")
+  io.read()
+  print("--removerepo <name> removes a repository from your repolist.")
+  io.read()
+  print("--listrepos lists all repositories in /empam_data/repositories_list.")
+  io.read()
+  print("--getother <url> <path> installs the resource at <url> to <path>.")
+  io.read()
+  print("--gather loads all repositories new to check for new packages, updates and so on.")
+  io.read()
+end
+
+--load APIs
+if not screenmgr then os.loadAPI("/empam/modules/screenmgr") end
+if not installmgr then os.loadAPI("/empam/modules/installmgr") end
+if not dlmgr then os.loadAPI("/empam/modules/dlmgr") end
+if not repomgr then os.loadAPI("/empam/modules/repomgr") end
+
+
+if #args == 0 then
+  error("No command specified. Try empam --help for a list of commands.")
+else
+  if args[1] == "--install" then
+    
+  elseif args[1] == "--uninstall" then
+    
+  elseif args[1] == "--update" then
+    
+  elseif args[1] == "--addrepo" then
+    repomgr.addRepo(args[2], args[3])
+    print("Repository was added.")
+  elseif args[1] == "--removerepo" then
+    repomgr.removeRepo(args[2])
+    print("Repository was removed.")
+  elseif args[1] == "--listrepos" then
+    if not fs.exists("/empam/empam_data/repositories_list") then
+      error("No repositories found.")
+    end
+    
+    print("The following repositories are registered:")
+    
+    local fh = fs.open("/empam/empam_data/repositories_list", "r")
+    local entries = textutils.unserialize(fh.readAll())
+    
+    for k, v in pairs(entries) do
+      print(v.name..": "..v.url)
+    end
+  elseif args[1] == "--gather" then
+    
+  elseif args[1] == "--help" then
+    printUsage()
+  elseif args[1] == "--version" then
+    print("EMPaM Version "..appBaseInfo.progVer)
+  else
+    error("Unknown command. Try --help for a list of commands.")
+  end
+
+end
