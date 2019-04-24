@@ -1,0 +1,77 @@
+--Install Manager of EMPaM
+
+local handledDependencies = {}
+
+--returns (in order: name, version, description, dependencies, file info, required plugins)
+function getPackageContents(url)
+  local pkg_info = dlmgr.getHttpContentAsTable(url)
+  
+  return pkg_info.name, pkg_info.version, pkg_info.description, pkg_info.dependencies, pkg_info.files, pkg_info.requiredPlugins
+end
+
+function downloadFiles(filesTbl)
+  
+end
+
+local function addHandledDependency(dep)
+  table.insert(handledDependencies, dep.url)
+end
+
+local function checkHandledDependency(dep)
+  for k, v in pairs(handledDependencies) do
+    if v == dep.url then error("Circular dependency detected!") end
+  end
+end
+
+local function resetHandledDependency()
+  handledDependencies = {}
+end
+
+function resolveDependencies(depTbl)
+  local resolvedDeps = {}
+  
+  print("Resolving dependencies...")
+  
+  for k, v in pairs(depTbl) do
+    local a, b, c, d, e = getPackageContents(v.url)
+    local innertable = resolveDependencies(d)
+    table.insert(resolvedDeps, e)
+    if next(innertable) then table.insert(resolvedDeps, innertable) end
+  end 
+  resetHandledDependency()
+  
+  return resolvedDeps
+end
+
+function downloadFiles(tFile)
+  local dt = {}
+  for k, v in pairs(tFile) do
+    print("Downloading file "..v.name)
+    local data = {
+      ["content"] = dlmgr.getHttpContents(v.url),
+      ["target"] = v.target,
+    }
+    
+    table.insert(dt, data)
+  end
+  
+  
+  return dt
+  
+end
+
+function installFiles(tFiles)
+  for k, v in pairs(tFiles) do
+    print("Installing "..v.target.."...")
+    if fs.exists(v.target) then
+      error("File "..v.target.." already exists.")
+    end
+    local fh = fs.open(v.target, "w")
+    fh.write(v.content)
+    fh.close()
+  end
+end
+
+function registerInstallation(name, ver)
+  fs.open("")
+end
