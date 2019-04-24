@@ -6,10 +6,11 @@
 local appBaseInfo = {
   ["minCOSV"] = "CraftOS 1.5",
   ["author"] = "MrObsidy",
-  ["loadedModules"] = {},
   ["progVer"] = "0.1.0",
   ["name"] = "EMPaM - Extensible Modular Packet Manager",
 }
+
+local plugins = {}
 
 local args = {...}
 
@@ -29,7 +30,9 @@ local function printUsage()
   print("--listrepos: list all repositories.")
   print("--listpackages: list packages.")
   print("--getother: get other programs, EXPERIMENTAL!")
-  print("--gather: update repository information")
+  print("--plugins: for a list of plugins")
+  print("--plugininfo: for info regarding a plugin")
+  print("--plugin: to execute plugin commands.")
   io.read()
   print("--install <package> installs <package> to your system. If multiple packages with that name exist, EMPaM will prompt you to tell from which repository you wish to install <package>.")
   io.read()
@@ -47,22 +50,125 @@ local function printUsage()
   io.read()
   print("--getother <url> <path> installs the resource at <url> to <path>.")
   io.read()
-  print("--gather loads all repositories new to check for new packages, updates and so on.")
+  print("--plugins lists all plugins loaded from /empam/modules/plugins/.")
+  io.read()
+  print("--plugininfo <name> provides info for the plugin <name>.")
+  io.read()
+  print("--plugin <name> <command> executes the plugin command <command> of the plugin <plugin>.")
   io.read()
 end
 
 --load APIs
 if not screenmgr then os.loadAPI("/empam/modules/screenmgr") end
-if not installmgr then os.loadAPI("/empam/modules/installmgr") end
 if not dlmgr then os.loadAPI("/empam/modules/dlmgr") end
+if not installmgr then os.loadAPI("/empam/modules/installmgr") end
 if not repomgr then os.loadAPI("/empam/modules/repomgr") end
+if not pluginmgr then os.loadAPI("/empam/modules/pluginmgr") end
 
+plugins = pluginmgr.loadPlugins(plugins)
 
 if #args == 0 then
   error("No command specified. Try empam --help for a list of commands.")
 else
   if args[1] == "--install" then
+    local foundpackages = {}
     
+    for k, v in pairs(repomgr.getRepos()) do
+      local packages = repomgr.getPackages(v.name)
+      for pname, purl in pairs(packages) do
+        if pname == args[2] then
+          local pwrap = {
+            ["name"] = pname,
+            ["url"] = purl,
+            ["repo"] = v.name,
+          }
+          
+          table.insert(foundpackages, pwrap)
+        end
+      end
+    end
+       
+    if #foundpackages == 0 then error("No package was found.") end
+    
+    print("The following packages were found: ")
+    local bgcol = term.getTextColor()
+    term.setTextColor(colors.yellow)
+    for k, v in pairs(foundpackages) do
+      print("["..k.."]".." Package "..v.name.." at "..v.url.." from "..v.repo)      
+    end
+    term.setTextColor(bgcol)
+  
+  write("Please choose an option [1,2,...]: ")
+  local num = io.read()
+  
+  local chosenPkg = foundpackages[tonumber(num)]
+  
+  print("")
+  local prevbg = term.getTextColor()
+  term.setTextColor(colors.lime)
+  print("Chosen package: ")
+  print("Name: "..chosenPkg.name)
+  print("URL: "..chosenPkg.url)
+  print("Repository: "..chosenPkg.repo)
+  term.setTextColor(prevbg)
+  print("")
+  write("Do you wish to continue? (Y/N): ")
+  local confirmation = io.read()
+  
+  if string.lower(confirmation) ~= 'y' then 
+    print("Aborting.")
+    return
+  end
+  
+  print("Retrieving package information..")
+  
+  local pname, pver, pdesc, pdep, pfiles, pplugins = installmgr.getPackageContents(chosenPkg.url)
+  print("Gathered information: ")
+  print("Package name: "..pname)
+  print("Package version: "..pver)
+  print("Package description: "..pdesc)
+  print("Package dependencies: ")
+  for k, v in pairs(pdep) do
+    write(v..", ")
+  end
+  print("")
+  print("Package Files: ")
+  for k, v in pairs(pfiles) do
+    write(v.name..", ")
+  end
+  print("")
+  print("Package required plugins: ")
+  for k, v in pairs(pplugins) do
+    write(v..", ")
+  end
+  print("")
+  
+  
+  
+  print("Resolvind dependencies..")
+  local newfiles = installmgr.downloadFiles(pfiles)
+  
+  print("Dependencies need to install the following files: ")
+  for k, v in pairs(newfiles) do
+    if v.name then
+      table.insert(pfiles, v)
+      write(v.name..", ")
+    end
+  end
+  print("")
+  print("Done injecting dependencies. ")
+  print("")
+  --print("Writing "..pname.."_ver_"..pver..".pack file...")
+  --installmgr.registerInstallation(pname, pversion)
+  
+  print("Downloading files..")
+  local files = installmgr.downloadFiles(pfiles)
+  print("Finished downloading files. Beginning install.")
+  
+  installmgr.installFiles(files)
+  
+  print("Finished installing files.")
+  
   elseif args[1] == "--uninstall" then
     
   elseif args[1] == "--update" then
@@ -89,10 +195,26 @@ else
       print("Package "..k.." at "..v)
     end
     
-  elseif args[1] == "--gather" then
-    
   elseif args[1] == "--help" then
     printUsage()
+  elseif args[1] == "--plugins" then
+    print("Plugins:")
+    
+    for k, v in pairs(plugins) do
+      print(v.getName())  
+    end
+  elseif args[1] == "--plugininfo" then
+    for k, v in pairs(plugins) do
+      if v.getName() == args[2] then
+        v.printHelp()
+      end
+    end
+  elseif args[1] == "--plugin" then  
+    for k, v in pairs(plugins) do
+      if v.getName() == args[2] then
+        v.execute(args[3])
+      end
+    end
   elseif args[1] == "--version" then
     print("EMPaM Version "..appBaseInfo.progVer)
   else
