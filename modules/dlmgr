@@ -1,0 +1,20 @@
+--Download Manager for EMPaM by MrObsidy
+--EMPaM is licensed under GNU GPLv3.
+
+--convenience function
+function getHttpContentAsTable(url)
+  return textutils.unserialize(getHttpContents(url))
+end
+
+function getHttpContents(url)
+  local hh = http.get(url)
+  if not hh then error("Invalid URL: "..url) end
+  return hh.readAll()
+end
+
+--returns: string name, string version, {dependencies}, string description
+function getPackageInfo(url)
+  local tb = getHttpContentAsTable(url)
+  
+  return tb.pack_name, tb.pack_version, tb.pack_dependencies, tb.pack_description
+end
