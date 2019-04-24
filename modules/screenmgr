@@ -1,0 +1,3 @@
+function printFullMode(text, fullmode)
+  if fullmode then print(text) end
+end
