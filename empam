@@ -27,6 +27,7 @@ local function printUsage()
   print("--addrepo: add a repository.")
   print("--removerepo: remove a repository.")
   print("--listrepos: list all repositories.")
+  print("--listpackages: list packages.")
   print("--getother: get other programs, EXPERIMENTAL!")
   print("--gather: update repository information")
   io.read()
@@ -41,6 +42,8 @@ local function printUsage()
   print("--removerepo <name> removes a repository from your repolist.")
   io.read()
   print("--listrepos lists all repositories in /empam_data/repositories_list.")
+  io.read()
+  print("--listpackages <repo> lists all packages in <repo>.")
   io.read()
   print("--getother <url> <path> installs the resource at <url> to <path>.")
   io.read()
@@ -71,18 +74,21 @@ else
     repomgr.removeRepo(args[2])
     print("Repository was removed.")
   elseif args[1] == "--listrepos" then
-    if not fs.exists("/empam/empam_data/repositories_list") then
-      error("No repositories found.")
-    end
-    
     print("The following repositories are registered:")
     
-    local fh = fs.open("/empam/empam_data/repositories_list", "r")
-    local entries = textutils.unserialize(fh.readAll())
+    local entries = repomgr.getRepos()
     
     for k, v in pairs(entries) do
       print(v.name..": "..v.url)
     end
+  elseif args[1] == "--listpackages" then
+    if not args[2] then error("No repository specified.") end
+    
+    local packages = repomgr.getPackages(args[2])
+    for k, v in pairs(packages) do
+      print("Package "..k.." at "..v)
+    end
+    
   elseif args[1] == "--gather" then
     
   elseif args[1] == "--help" then
