@@ -1,0 +1,94 @@
+--variables
+local fullmode = false
+
+function initialize(parFullmode)
+  fullmode = parFullmode
+end
+
+function getRepos()
+  local returnData = {}
+  
+  if not fs.exists("/empam/empam_data/repositories_list") then return returnData end
+  
+  local fh = fs.open("/empam/empam_data/repositories_list", "r")
+  local repodata = textutils.unserialize(fh.readAll())
+  for k, ov in pairs(repodata) do
+    
+    for k, v in pairs(ov) do
+      if k == "name" then
+        print("Looked at Repository "..v.."...")
+      end
+      if k == "url" then
+        print("Adding URL "..v.." to URL return list")
+        table.insert(returnData, v)
+      end
+    end
+  end
+  
+  return returnData
+  
+end
+
+function addRepo(name, url)
+  
+  if not name or not url then error("Missing name or url.") end
+  
+  local currRepoData = {}
+  
+  if fs.exists("/empam/empam_data/repositories_list") then
+    local fh = fs.open("/empam/empam_data/repositories_list" ,"r")
+    currRepoData = textutils.unserialize(fh.readAll())
+    
+    for k, v in pairs(currRepoData) do
+      if v.name == name then
+        error("Repository already exists.")
+      end
+    end
+    
+    fh.close()
+    fs.delete("/empam/empam_data/repositories_list")
+  else
+    currRepoData = {}
+  end
+  
+  local innertable = {
+    ["name"] = name,
+    ["url"] = url,
+  }
+  
+  print("Inserting repository "..name.." with URL "..url.." into repolist, please wait...")
+  table.insert(currRepoData, innertable)
+  print("Insertion complete.")
+  
+  local nfh = fs.open("/empam/empam_data/repositories_list", "w")
+  nfh.write(textutils.serialize(currRepoData))
+  nfh.close()
+  
+  currRepoData = nil
+end
+
+function removeRepo(name)
+  if not fs.exists("/empam/empam_data/repositories_list") then error("No repositories were found. repositories_list is empty!") end
+  
+  local fh = fs.open("/empam/empam_data/repositories_list", "r")
+  local currRepoData = textutils.unserialize(fh.readAll())
+  fh.close()
+  
+  local found = false
+  for k, v in pairs(currRepoData) do
+    if v.name == name then
+      print("Found repository "..name.." with the URL "..v.url)
+      table.remove(currRepoData, k)
+      found = true
+      break
+    end
+  end
+  
+  if not found then error("Repository was not found in repositories_list.") end
+  
+  fs.delete("/empam/empam_data/repositories_list")
+  
+  local nfh = fs.open("/empam/empam_data/repositories_list", "w")
+  nfh.write(textutils.serialize(currRepoData))
+  nfh.close()
+end
