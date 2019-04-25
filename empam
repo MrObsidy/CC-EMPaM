@@ -82,6 +82,18 @@ else
     print("The most up-to-date version of EMPaM is "..empamver)
     print("Run empam --update empam if your install is outdated.") 
     
+    sysPacks[empam] = nil
+    
+    print("Now installing all other packages from SYSTEMRPO....")
+    
+    for k, v in pairs(sysPacks) do
+      local pname, pver, pdesc, pdep, pfiles, pplugins = installmgr.getPackageContents(chosenPkg.url)
+      
+      local files = installmgr.downloadFiles(pfiles)
+      installmgr.installFiles(pfiles)
+      
+    end
+    
     print("EMPaM will now reboot your system. Once the system is rebooted, you are ready to go!")
     
   elseif args[1] == "--install" then
