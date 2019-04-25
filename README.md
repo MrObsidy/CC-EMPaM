@@ -13,7 +13,7 @@ empam --help for a list of commands. This explains everything.
 
 # Writing plugins
 To write a plugin, place a file (no extension!) into the /empam/modules/plugins/. The module pluginmgr will automatically
-load all plugins in /empam/modules/plugins/.
+load all plugins in /empam/modules/plugins/. In this GitHub repo, you can see a plugin in /modules/plugins/.
 
 All plugins must have the following global methods:
 
