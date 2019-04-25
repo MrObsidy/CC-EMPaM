@@ -69,7 +69,21 @@ plugins = pluginmgr.loadPlugins(plugins)
 if #args == 0 then
     error("No command specified. Try empam --help for a list of commands.")
 else
-  if args[1] == "--install" then
+  if args[1] == "finish-install" then
+    term.clear()
+    term.setCursorPos(1,1)
+    print("This setup will finish your EMPaM installation.")
+    repomgr.addRepo("SYSTEMREPO", "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/repositories/systemrepo.repo")
+    local sysPacks = repomgr.getPackages("SYSTEMREPO")
+    
+    local empamn, empamver = installmgr.getPackageContents(sysPacks.empam)
+    
+    print("You are running EMPaM "..appBaseInfo.progVer)
+    print("The most up-to-date version of EMPaM is "..empamver)
+    print("Run empam --update empam if your install is outdated.") 
+    
+    
+  elseif args[1] == "--install" then
     local foundpackages = {}
       
     for k, v in pairs(repomgr.getRepos()) do
