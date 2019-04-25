@@ -1,0 +1,18 @@
+{
+  ["name"] = "AuthorPlugin",
+  ["version"] = "1.0.0",
+  ["description"] = "The AuthorPlugin that is here to show off the plugin functionality.",
+  ["dependencies"] = {
+  
+  },
+  ["files"] = {
+    [1] = {
+      ["name"] = "AuthorPlugin",
+      ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/repositories/plugins/authorplugin",
+      ["target"] = "/empam/modules/plugins/authorplugin",
+    },
+  },
+  ["requiredPlugins"] = {
+  
+  },
+}
