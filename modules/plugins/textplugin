@@ -11,7 +11,11 @@ function printHelp()
 end
 
 function execute(args)
-  print("You entered: "..args)
+  local catStr = ""
+  
+  for k, v in pairs(args) do
+    catStr = catStr..v
+  end
+  
+  print("You entered: "..catStr)
 end
-
-
