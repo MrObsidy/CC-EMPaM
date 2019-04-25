@@ -319,7 +319,7 @@ else
       print("Plugins:")
       
       for k, v in pairs(plugins) do
-          print(v.getName())  
+          print("["..k.."]".." "..v.getName())  
       end
   elseif args[1] == "--plugininfo" then
       for k, v in pairs(plugins) do
