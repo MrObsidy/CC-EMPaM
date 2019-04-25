@@ -1,0 +1,43 @@
+{
+  ["name"] = "EMPaM",
+  ["version"] = "0.1.1",
+  ["description"] = "The EMPaM Package Manager.",
+  ["dependencies"] = {
+  
+  },
+  ["files"] = {
+    [1] = {
+      ["name"] = "empam",
+      ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/empam",
+      ["target"] = "/empam/empam",
+    },
+    [1] = {
+      ["name"] = "repomgr",
+      ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/modules/repomgr",
+      ["target"] = "/empam/modules/repomgr",
+    },
+    [1] = {
+      ["name"] = "installmgr",
+      ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/modules/installmgr",
+      ["target"] = "/empam/modules/installmgr",
+    },
+    [1] = {
+      ["name"] = "dlmgr",
+      ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/modules/dlmgr",
+      ["target"] = "/empam/modules/dlmgr",
+    },
+    [1] = {
+      ["name"] = "screenmgr",
+      ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/modules/screenmgr",
+      ["target"] = "/empam/modules/screenmgr",
+    },
+    [1] = {
+      ["name"] = "pluginmgr",
+      ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/modules/pluginmgr",
+      ["target"] = "/empam/modules/pluginmgr",
+    },
+  },
+  ["requiredPlugins"] = {
+  
+  },
+}
