@@ -1,4 +1,7 @@
-function loadPlugin(path)
+--This function is a copy-paste of a function originally posted
+--in the CC Forums by CrazedProgrammer.
+
+local function loadPlugin(path)
   local tmp = {}
   setmetatable(tmp, {__index = _G})
   local fn, err = loadfile(path, tmp)
