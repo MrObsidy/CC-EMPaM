@@ -14,8 +14,8 @@ function execute(args)
   local catStr = ""
   
   for k, v in pairs(args) do
-    catStr = catStr..v
+    catStr = catStr..v.." "
   end
-  
-  print("You entered: "..catStr)
+
+  print(getName() .." was passed the following arguments: "..catStr)
 end
