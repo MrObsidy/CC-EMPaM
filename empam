@@ -4,7 +4,6 @@
 --the GNU General Public License v3.
 
 local appBaseInfo = {
-  ["minCOSV"] = "CraftOS 1.5",
   ["author"] = "MrObsidy",
   ["progVer"] = "0.1.0",
   ["name"] = "EMPaM - Extensible Modular Packet Manager",
@@ -15,47 +14,47 @@ local plugins = {}
 local args = {...}
 
 local function printUsage()
-  print("Welcome to EMPaM: "..appBaseInfo.name.." version "..appBaseInfo.progVer)
-  print("You can press Ctrl-T at any time to abort")
-  print("this help display.")
-  io.read()
-  print("Commands:")
-  print("--help: print this help.")
-  print("--version: print the version.")
-  print("--install: install a package.")
-  print("--uninstall: uninstall a package.")
-  print("--update: update a package")
-  print("--addrepo: add a repository.")
-  print("--removerepo: remove a repository.")
-  print("--listrepos: list all repositories.")
-  print("--listpackages: list packages.")
-  print("--getother: get other programs, EXPERIMENTAL!")
-  print("--plugins: for a list of plugins")
-  print("--plugininfo: for info regarding a plugin")
-  print("--plugin: to execute plugin commands.")
-  io.read()
-  print("--install <package> installs <package> to your system. If multiple packages with that name exist, EMPaM will prompt you to tell from which repository you wish to install <package>.")
-  io.read()
-  print("--uninstall <package> uninstalls a previously installed package.")
-  io.read()
-  print("--update <package> updates package <package>. If multiple packages with that name are installed, EMPaM will prompt you to tell which one you mean. Also, if <package> is up to date, will ask you if you want to install anyways.")
-  io.read()
-  print("--addrepo <name> <url> adds a repository with the URL <url> to your repolist with the name <name>. Check the forum post to see how to properly set up repositories.")
-  io.read()
-  print("--removerepo <name> removes a repository from your repolist.")
-  io.read()
-  print("--listrepos lists all repositories in /empam_data/repositories_list.")
-  io.read()
-  print("--listpackages <repo> lists all packages in <repo>.")
-  io.read()
-  print("--getother <url> <path> installs the resource at <url> to <path>.")
-  io.read()
-  print("--plugins lists all plugins loaded from /empam/modules/plugins/.")
-  io.read()
-  print("--plugininfo <name> provides info for the plugin <name>.")
-  io.read()
-  print("--plugin <name> <command> executes the plugin command <command> of the plugin <plugin>.")
-  io.read()
+    print("Welcome to EMPaM: "..appBaseInfo.name.." version "..appBaseInfo.progVer)
+    print("You can press Ctrl-T at any time to abort")
+    print("this help display.")
+    io.read()
+    print("Commands:")
+    print("--help: print this help.")
+    print("--version: print the version.")
+    print("--install: install a package.")
+    print("--uninstall: uninstall a package.")
+    print("--update: update a package")
+    print("--addrepo: add a repository.")
+    print("--removerepo: remove a repository.")
+    print("--listrepos: list all repositories.")
+    print("--listpackages: list packages.")
+    print("--getother: get other programs, EXPERIMENTAL!")
+    print("--plugins: for a list of plugins")
+    print("--plugininfo: for info regarding a plugin")
+    print("--plugin: to execute plugin commands.")
+    io.read()
+    print("--install <package> installs <package> to your system. If multiple packages with that name exist, EMPaM will prompt you to tell from which repository you wish to install <package>.")
+    io.read()
+    print("--uninstall <package> uninstalls a previously installed package.")
+    io.read()
+    print("--update <package> updates package <package>. If multiple packages with that name are installed, EMPaM will prompt you to tell which one you mean. Also, if <package> is up to date, will ask you if you want to install anyways.")
+    io.read()
+    print("--addrepo <name> <url> adds a repository with the URL <url> to your repolist with the name <name>. Check the forum post to see how to properly set up repositories.")
+    io.read()
+    print("--removerepo <name> removes a repository from your repolist.")
+    io.read()
+    print("--listrepos lists all repositories in /empam_data/repositories_list.")
+    io.read()
+    print("--listpackages <repo> lists all packages in <repo>.")
+    io.read()
+    print("--getother <url> <path> installs the resource at <url> to <path>.")
+    io.read()
+    print("--plugins lists all plugins loaded from /empam/modules/plugins/.")
+    io.read()
+    print("--plugininfo <name> provides info for the plugin <name>.")
+    io.read()
+    print("--plugin <name> <command> executes the plugin command <command> of the plugin <plugin>.")
+    io.read()
 end
 
 --load APIs
@@ -68,157 +67,247 @@ if not pluginmgr then os.loadAPI("/empam/modules/pluginmgr") end
 plugins = pluginmgr.loadPlugins(plugins)
 
 if #args == 0 then
-  error("No command specified. Try empam --help for a list of commands.")
+    error("No command specified. Try empam --help for a list of commands.")
 else
   if args[1] == "--install" then
     local foundpackages = {}
-    
+      
     for k, v in pairs(repomgr.getRepos()) do
       local packages = repomgr.getPackages(v.name)
-      for pname, purl in pairs(packages) do
-        if pname == args[2] then
-          local pwrap = {
-            ["name"] = pname,
-            ["url"] = purl,
-            ["repo"] = v.name,
-          }
-          
-          table.insert(foundpackages, pwrap)
+        for pname, purl in pairs(packages) do
+          if pname == args[2] then
+            local pwrap = {
+              ["name"] = pname,
+              ["url"] = purl,
+              ["repo"] = v.name,
+            }
+                    
+            table.insert(foundpackages, pwrap)
+          end
         end
       end
+           
+      if #foundpackages == 0 then error("No package was found.") end
+        
+      print("The following packages were found: ")
+      local bgcol = term.getTextColor()
+      term.setTextColor(colors.yellow)
+      for k, v in pairs(foundpackages) do
+          print("["..k.."]".." Package "..v.name.." at "..v.url.." from "..v.repo)      
+      end
+      term.setTextColor(bgcol)
+      
+      write("Please choose an option [1,2,...]: ")
+      local num = io.read()
+      
+      local chosenPkg = foundpackages[tonumber(num)]
+      
+      print("")
+      local prevbg = term.getTextColor()
+      term.setTextColor(colors.lime)
+      print("Chosen package: ")
+      print("Name: "..chosenPkg.name)
+      print("URL: "..chosenPkg.url)
+      print("Repository: "..chosenPkg.repo)
+      term.setTextColor(prevbg)
+      print("")
+      write("Do you wish to continue? (Y/N): ")
+      local confirmation = io.read()
+      
+      if string.lower(confirmation) ~= 'y' then 
+          print("Aborting.")
+          return
+      end
+      
+      print("Retrieving package information..")
+      
+      local pname, pver, pdesc, pdep, pfiles, pplugins = installmgr.getPackageContents(chosenPkg.url)
+      print("Gathered information: ")
+      print("Package name: "..pname)
+    print("Package version: "..pver)
+    print("Package description: "..pdesc)
+    print("Package dependencies: ")
+    for k, v in pairs(pdep) do
+        write(v..", ")
     end
-       
-    if #foundpackages == 0 then error("No package was found.") end
+    print("")
+    print("Package Files: ")
+    for k, v in pairs(pfiles) do
+        write(v.name..", ")
+    end
+    print("")
+    print("Package required plugins: ")
+    for k, v in pairs(pplugins) do
+        write(v..", ")
+    end
+    print("")
     
-    print("The following packages were found: ")
-    local bgcol = term.getTextColor()
-    term.setTextColor(colors.yellow)
-    for k, v in pairs(foundpackages) do
-      print("["..k.."]".." Package "..v.name.." at "..v.url.." from "..v.repo)      
-    end
-    term.setTextColor(bgcol)
-  
-  write("Please choose an option [1,2,...]: ")
-  local num = io.read()
-  
-  local chosenPkg = foundpackages[tonumber(num)]
-  
-  print("")
-  local prevbg = term.getTextColor()
-  term.setTextColor(colors.lime)
-  print("Chosen package: ")
-  print("Name: "..chosenPkg.name)
-  print("URL: "..chosenPkg.url)
-  print("Repository: "..chosenPkg.repo)
-  term.setTextColor(prevbg)
-  print("")
-  write("Do you wish to continue? (Y/N): ")
-  local confirmation = io.read()
-  
-  if string.lower(confirmation) ~= 'y' then 
-    print("Aborting.")
-    return
-  end
-  
-  print("Retrieving package information..")
-  
-  local pname, pver, pdesc, pdep, pfiles, pplugins = installmgr.getPackageContents(chosenPkg.url)
-  print("Gathered information: ")
-  print("Package name: "..pname)
-  print("Package version: "..pver)
-  print("Package description: "..pdesc)
-  print("Package dependencies: ")
-  for k, v in pairs(pdep) do
-    write(v..", ")
-  end
-  print("")
-  print("Package Files: ")
-  for k, v in pairs(pfiles) do
-    write(v.name..", ")
-  end
-  print("")
-  print("Package required plugins: ")
-  for k, v in pairs(pplugins) do
-    write(v..", ")
-  end
-  print("")
-  
-  
-  
+    
+    
   print("Resolvind dependencies..")
   local newfiles = installmgr.downloadFiles(pfiles)
   
   print("Dependencies need to install the following files: ")
   for k, v in pairs(newfiles) do
-    if v.name then
-      table.insert(pfiles, v)
-      write(v.name..", ")
-    end
+      if v.name then
+          table.insert(pfiles, v)
+          write(v.name..", ")
+      end
   end
+  
+  if not #newfiles == 0 then
+    print("Do you comply with these additional downloads? (Y/N) ")
+    
+    local dc = io.read()
+    
+    if string.lower(dc) ~= 'y' then
+      error("Installation aborted. Dependencies not confirmed.")
+    end
+    
+  end
+  
   print("")
   print("Done injecting dependencies. ")
   print("")
-  --print("Writing "..pname.."_ver_"..pver..".pack file...")
-  --installmgr.registerInstallation(pname, pversion)
   
   print("Downloading files..")
   local files = installmgr.downloadFiles(pfiles)
-  print("Finished downloading files. Beginning install.")
+  print("Finished downloading files. Checking for conflicts and writing installation config to /empam/empam_data/packages/"..pname..".")
+  
+  local conflicts = installmgr.checkInstallation(files)
+  
+  print("")
+  
+  if #conflicts ~= 0 then
+    print("These file conflicts were found:")
+    for k, v in pairs(conflicts) do
+      print("File "..v.file..", source: "..v.from)
+    end
+    
+    print("")
+    
+    print("Do you wish to continue and overwrite these files? (Y/N): ")
+    local cdo = io.read()
+    
+    if string.lower(cdo) ~= 'y' then
+      error("Installation aborted. Files already existed.")
+    end
+    
+  else
+    print("No conflicts were found.")
+  end
   
   installmgr.installFiles(files)
   
   print("Finished installing files.")
+  print("Writing installation confirmation...")
+  
+  installmgr.registerInstallation(pname, chosenPkg.repo, pver, pfiles)
+  
+  print("")
+  print("Done!")
   
   elseif args[1] == "--uninstall" then
     
+      if #args == 1 then error("Too many or too few arguments.") end
+    
+      local pkges = installmgr.getInstalledPackage(args[2])
+      
+      local tcol = term.getTextColor()
+      
+      term.setTextColor(colors.yellow)
+      
+      print("Which package do you wish to uninstall?")
+      
+      for k, v in pairs(pkges) do
+        print("["..k.."]".." "..v.name..", version "..v.version.." by "..v.repo)
+      end
+      
+      term.setTextColor(tcol)
+      
+      print("Please enter a choice [1,2,...]: ")
+      local uninst_choice = io.read()
+     
+      local choice = pkges[tonumber(uninst_choice)]
+      
+      local ptg = term.getTextColor()
+      term.setTextColor(colors.orange)
+      print("")
+      print("Chosen package: ")
+      print("Name: "..choice.name)
+      print("Repository: "..choice.repo)
+      print("Version: "..choice.version)
+      print("")
+      term.setTextColor(ptg)
+      print("Do you wish to continue? (Y/N) ")
+      
+      local confirmation = io.read()
+      
+      if string.lower(confirmation) ~= 'y' then
+        error("Uninstallation aborted.")
+      end
+      
+      print("Uninstalling package...")
+      
+      for k, v in pairs(choice.files) do
+        fs.delete(v)
+      end
+      
+      print("Done removing files.")
+      print("Removing entry...")
+      
+      fs.delete("/empam/empam_data/packages/"..choice.name.."_"..choice.version)
+      
+      print("Done!")
+      
   elseif args[1] == "--update" then
-    
+      
   elseif args[1] == "--addrepo" then
-    repomgr.addRepo(args[2], args[3])
-    print("Repository was added.")
+      repomgr.addRepo(args[2], args[3])
+      print("Repository was added.")
   elseif args[1] == "--removerepo" then
-    repomgr.removeRepo(args[2])
-    print("Repository was removed.")
+      repomgr.removeRepo(args[2])
+      print("Repository was removed.")
   elseif args[1] == "--listrepos" then
-    print("The following repositories are registered:")
-    
-    local entries = repomgr.getRepos()
-    
-    for k, v in pairs(entries) do
-      print(v.name..": "..v.url)
-    end
+      print("The following repositories are registered:")
+      
+      local entries = repomgr.getRepos()
+      
+      for k, v in pairs(entries) do
+          print(v.name..": "..v.url)
+      end
   elseif args[1] == "--listpackages" then
-    if not args[2] then error("No repository specified.") end
-    
-    local packages = repomgr.getPackages(args[2])
-    for k, v in pairs(packages) do
-      print("Package "..k.." at "..v)
-    end
-    
+      if not args[2] then error("No repository specified.") end
+      
+      local packages = repomgr.getPackages(args[2])
+      for k, v in pairs(packages) do
+          print("Package "..k.." at "..v)
+      end
+      
   elseif args[1] == "--help" then
-    printUsage()
+      printUsage()
   elseif args[1] == "--plugins" then
-    print("Plugins:")
-    
-    for k, v in pairs(plugins) do
-      print(v.getName())  
-    end
+      print("Plugins:")
+      
+      for k, v in pairs(plugins) do
+          print(v.getName())  
+      end
   elseif args[1] == "--plugininfo" then
-    for k, v in pairs(plugins) do
-      if v.getName() == args[2] then
-        v.printHelp()
+      for k, v in pairs(plugins) do
+          if v.getName() == args[2] then
+              v.printHelp()
+          end
       end
-    end
   elseif args[1] == "--plugin" then  
-    for k, v in pairs(plugins) do
-      if v.getName() == args[2] then
-        v.execute(args[3])
+      for k, v in pairs(plugins) do
+          if v.getName() == args[2] then
+              v.execute(args)
+          end
       end
-    end
   elseif args[1] == "--version" then
-    print("EMPaM Version "..appBaseInfo.progVer)
+      print("EMPaM Version "..appBaseInfo.progVer)
   else
-    error("Unknown command. Try --help for a list of commands.")
+      error("Unknown command. Try --help for a list of commands.")
   end
 
 end
