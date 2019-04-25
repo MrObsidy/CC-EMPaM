@@ -2,8 +2,9 @@
 EMPaM - the ComputerCraft Extensible Modular Packet Manager.
 
 # Installation:
+Run: pastebin run ZJEUaKP6
 
-I'm still setting up pastebin. Please be patient for a couple of days.
+The wizard will do the rest for you.
 
 The program gets installed to /empam/. The main executable is /empam/empam, modules are loaded to /empam/modules/
 and plugins can be installed to /empam/modules/plugins/.
