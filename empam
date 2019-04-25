@@ -95,6 +95,8 @@ else
     end
     
     print("EMPaM will now reboot your system. Once the system is rebooted, you are ready to go!")
+    sleep(2)
+    os.reboot()
     
   elseif args[1] == "--install" then
     local foundpackages = {}
