@@ -55,8 +55,22 @@ function downloadFiles(tFile)
     table.insert(dt, data)
   end
   
-  
   return dt
+end
+
+function getInstalledPackage(package)
+  local foundPackages = {}
+  
+  for k, v in pairs(fs.list("/empam/empam_data/packages/")) do
+    local fc = fs.open("/empam/empam_data/packages/"..v, "r")
+    local parsedInfo = textutils.unserialize(fc.readAll())
+    fc.close()
+    if parsedInfo.name == package then
+      table.insert(foundPackages, parsedInfo)
+    end
+  end
+  
+  return foundPackages
   
 end
 
@@ -64,7 +78,7 @@ function installFiles(tFiles)
   for k, v in pairs(tFiles) do
     print("Installing "..v.target.."...")
     if fs.exists(v.target) then
-      error("File "..v.target.." already exists.")
+      fs.delete(v.target)
     end
     local fh = fs.open(v.target, "w")
     fh.write(v.content)
@@ -72,6 +86,52 @@ function installFiles(tFiles)
   end
 end
 
-function registerInstallation(name, ver)
-  fs.open("")
+function checkInstallation(files)
+  local conflicts = {}
+  
+  for m, val in pairs(files) do 
+    if fs.exists(val.target) then
+      print("Found overlapping file: "..val.target)
+      
+      local innerTable = {
+        ["file"] = val.target,
+        ["from"] = "File created locally on this system",
+      }
+      
+      for k, v in pairs(fs.list("/empam/empam_data/packages/")) do
+        local fh = fs.open("/empam/empam_data/packages/"..v, "r")
+        local fileTable = textutils.unserialize(fh.readAll())
+        fh.close()
+        for key, instFile in pairs(fileTable.files) do
+          for a, dlFile in pairs(files) do
+              innerTable.from = fileTable.repo
+          end
+        end
+      end
+      
+      table.insert(conflicts, innerTable)
+    end
+  end
+
+  return conflicts
+  
+end
+
+function registerInstallation(name, repo, ver, files)
+  local targets = {}
+  
+  for k, v in pairs(files) do
+    table.insert(targets, v.target)
+  end
+  
+  local cont = {
+    ["name"] = name,
+    ["repo"] = repo,
+    ["version"] = ver,
+    ["files"] = targets,
+  }
+  
+  local fh = fs.open("/empam/empam_data/packages/"..name.."_"..ver, "w")
+  fh.write(textutils.serialize(cont))
+  fh.close()
 end
