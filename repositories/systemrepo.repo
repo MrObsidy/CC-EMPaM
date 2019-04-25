@@ -1,0 +1,5 @@
+{
+  ["packages"] = {
+    ["empam"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/empam.epf",
+  }
+}
