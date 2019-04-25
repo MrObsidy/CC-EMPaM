@@ -11,27 +11,27 @@
       ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/empam",
       ["target"] = "/empam/empam",
     },
-    [1] = {
+    [2] = {
       ["name"] = "repomgr",
       ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/modules/repomgr",
       ["target"] = "/empam/modules/repomgr",
     },
-    [1] = {
+    [3] = {
       ["name"] = "installmgr",
       ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/modules/installmgr",
       ["target"] = "/empam/modules/installmgr",
     },
-    [1] = {
+    [4] = {
       ["name"] = "dlmgr",
       ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/modules/dlmgr",
       ["target"] = "/empam/modules/dlmgr",
     },
-    [1] = {
+    [5] = {
       ["name"] = "screenmgr",
       ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/modules/screenmgr",
       ["target"] = "/empam/modules/screenmgr",
     },
-    [1] = {
+    [6] = {
       ["name"] = "pluginmgr",
       ["url"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/modules/pluginmgr",
       ["target"] = "/empam/modules/pluginmgr",
