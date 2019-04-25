@@ -1,0 +1,17 @@
+function initialize()
+  print("AuthorPlugin by MrObsidy24")
+end
+
+function getName()
+  return "AuthorPlugin"
+end
+
+function printHelp()
+  print("empam --plugin AuthorPlugin author: Prints the Author information. Is also here to show-off plugin capabilities.")
+end
+
+function execute(args)
+  if args[3] == "author" then
+    print("EMPaM Package Manager and AuthorPlugin test plugin by MrObsidy")
+  end
+end
