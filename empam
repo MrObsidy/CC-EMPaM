@@ -90,7 +90,7 @@ else
       local pname, pver, pdesc, pdep, pfiles, pplugins = installmgr.getPackageContents(v)
       
       local files = installmgr.downloadFiles(pfiles)
-      installmgr.installFiles(pfiles)
+      installmgr.installFiles(files)
       
     end
     
