@@ -82,6 +82,7 @@ else
     print("The most up-to-date version of EMPaM is "..empamver)
     print("Run empam --update empam if your install is outdated.") 
     
+    print("EMPaM will now reboot your system. Once the system is rebooted, you are ready to go!")
     
   elseif args[1] == "--install" then
     local foundpackages = {}
