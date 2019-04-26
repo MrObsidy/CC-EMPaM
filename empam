@@ -76,11 +76,15 @@ else
     repomgr.addRepo("SYSTEMREPO", "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/repositories/systemrepo.repo")
     local sysPacks = repomgr.getPackages("SYSTEMREPO")
     
-    local empamn, empamver = installmgr.getPackageContents(sysPacks.empam)
+
+
+    local pname, pver, pdesc, pdep, pfiles, pplugins = installmgr.getPackageContents(sysPacks.empam)
     
     print("You are running EMPaM "..appBaseInfo.progVer)
-    print("The most up-to-date version of EMPaM is "..empamver)
+    print("The most up-to-date version of EMPaM is "..pver)
     print("Run empam --update empam if your install is outdated.") 
+    
+    installmgr.registerInstallation(pname, "SYSTEMREPO", pver, pfiles)
     
     sysPacks.empam = nil
     
