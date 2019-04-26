@@ -5,7 +5,7 @@
 
 local appBaseInfo = {
   ["author"] = "MrObsidy",
-  ["progVer"] = "0.1.0",
+  ["progVer"] = "1.0.0",
   ["name"] = "EMPaM - Extensible Modular Packet Manager",
 }
 
