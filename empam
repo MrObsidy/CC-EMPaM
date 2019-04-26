@@ -80,9 +80,13 @@ else
 
     local pname, pver, pdesc, pdep, pfiles, pplugins = installmgr.getPackageContents(sysPacks.empam)
     
+    print("")
     print("You are running EMPaM "..appBaseInfo.progVer)
     print("The most up-to-date version of EMPaM is "..pver)
     print("Run empam --update empam if your install is outdated.") 
+    print("")
+    print("Press enter to continue...")
+    io.read()
     
     installmgr.registerInstallation(pname, "SYSTEMREPO", pver, pfiles)
     
@@ -322,7 +326,7 @@ else
         local pname, pver = installmgr.getPackageContents(pack)
         
         if v.version ~= pver then
-          print("["..k.."]".." "..v.name.." from "..v.repo..", you have installed: "..v.version..", the newest version is: "..pver)
+          print("["..k.."]".." "..v.name.." from "..v.repo..", installed version: "..v.version..", new version: "..pver)
           table.insert(outdatedpackages, "foundone")
         end
         
