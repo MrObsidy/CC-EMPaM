@@ -20,8 +20,6 @@ end
 
 function getRepoURL(name)
   
-  print("Retrieving repo URL...")
-  
   local repos = getRepos()
   
   for k, v in pairs(repos) do
