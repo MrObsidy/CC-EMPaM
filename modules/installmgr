@@ -131,6 +131,8 @@ function registerInstallation(name, repo, ver, files)
     ["files"] = targets,
   }
   
+  if fs.exists("/empam/empam_data/packages/"..name.."_"..ver) then fs.delete("/empam/empam_data/packages/"..name.."_"..ver)
+  
   local fh = fs.open("/empam/empam_data/packages/"..name.."_"..ver, "w")
   fh.write(textutils.serialize(cont))
   fh.close()
