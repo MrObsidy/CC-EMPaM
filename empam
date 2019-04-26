@@ -70,7 +70,7 @@ if #args == 0 then
     error("No command specified. Try empam --help for a list of commands.")
 else
   if args[1] == "finish-install" then
-    term.clear()
+       term.clear()
     term.setCursorPos(1,1)
     print("This setup will finish your EMPaM installation.")
     repomgr.addRepo("SYSTEMREPO", "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/repositories/systemrepo.repo")
@@ -91,6 +91,8 @@ else
       
       local files = installmgr.downloadFiles(pfiles)
       installmgr.installFiles(files)
+      
+      installmgr.registerInstallation(pname, "SYSTEMREPO", pver, pfiles) 
       
     end
     
@@ -291,6 +293,91 @@ else
       
   elseif args[1] == "--update" then
       
+      if not args[2] then error("No package specified.") end
+      
+      print("Checking for updates for package "..args[2])
+
+      local foundPackages = installmgr.getInstalledPackage(args[2])
+      
+      
+      if #foundPackages == 0 then error("No packages were found.") end
+      
+      print("The following packages were found: ")
+      
+      local tc = term.getTextColor()
+      
+      term.setTextColor(colors.orange)
+      
+      local outdatedpackages = {}
+      
+      for k, v in pairs(foundPackages) do
+        
+        local pack_url_repos = repomgr.getPackages(v.repo)
+        local pack = pack_url_repos[v.name]
+        
+        local pname, pver = installmgr.getPackageContents(pack)
+        
+        if v.version ~= pver then
+          print("["..k.."]".." "..v.name.." from "..v.repo..", you have installed: "..v.version..", the newest version is: "..pver)
+          table.insert(outdatedpackages, "foundone")
+        end
+        
+      end
+      
+      if #outdatedpackages == 0 then error("All packages with the name "..args[2].." are up-to-date.") end
+      
+      term.setTextColor(tc)
+      
+      print("Please choose which package you want to choose [1,2,...]: ")
+      local ench = io.read()
+      
+      local choice = foundPackages[tonumber(ench)]
+      
+      term.setTextColor(colors.purple)
+      
+      local pack_url = repomgr.getPackages(choice.repo)
+      local pack = pack_url[choice.name]         
+      local pname, pver, pdesc, pdep, pfiles, preqPl = installmgr.getPackageContents(pack)
+      
+      print("")
+      print("The following package will be updated: ")
+      print("Name: "..choice.name)
+      print("Files: "..#choice.files)
+      print("Repository: "..choice.repo)
+      print("Version: "..choice.version)
+      print("")
+      
+      term.setTextColor(tc)
+      
+      print("Do you wish to continue? (Y/N): ")
+      local conf = io.read()
+      
+      if string.lower(conf) ~= 'y' then error("Update aborted.") end
+      
+      print("Retrieving package data..")
+      
+      print("Uninstalling old data...")
+      
+      for k, v in pairs(choice.files) do
+        fs.delete(v)
+      end
+            
+      print("Done. Deleting registration..")
+      
+      fs.delete("/empam/empam_data/packages/"..choice.name.."_"..choice.version)
+      
+      print("Done. Downloading new version...")
+      
+      local dlf = installmgr.downloadFiles(pfiles)
+      print("Done. Installing files...")
+      
+    
+      installmgr.installFiles(dlf)
+      print("Done installing. Registering installation...")  
+      
+      installmgr.registerInstallation(pname, choice.repo, pver, pfiles)
+      print("Done!")
+      
   elseif args[1] == "--addrepo" then
       repomgr.addRepo(args[2], args[3])
       print("Repository was added.")
@@ -319,7 +406,7 @@ else
       print("Plugins:")
       
       for k, v in pairs(plugins) do
-          print("["..k.."]".." "..v.getName())  
+          print(v.getName())  
       end
   elseif args[1] == "--plugininfo" then
       for k, v in pairs(plugins) do
