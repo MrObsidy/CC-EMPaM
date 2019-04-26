@@ -1,5 +1,5 @@
 {
-  ["name"] = "AuthorPlugin",
+  ["name"] = "authorplugin",
   ["version"] = "1.0.0",
   ["description"] = "The AuthorPlugin that is here to show off the plugin functionality.",
   ["dependencies"] = {
