@@ -397,16 +397,32 @@ else
       
       local entries = repomgr.getRepos()
       
+      local tc = term.getTextColor()
+      term.setTextColor(colors.blue)
+      print("")
       for k, v in pairs(entries) do
           print(v.name..": "..v.url)
+          print("")
       end
+      print("")
+      
+      term.setTextColor(tc)
+      
   elseif args[1] == "--listpackages" then
       if not args[2] then error("No repository specified.") end
       
       local packages = repomgr.getPackages(args[2])
+      
+      local tc = term.getTextColor()
+      term.setTextColor(colors.lightBlue)
+      print("")
       for k, v in pairs(packages) do
           print("Package "..k.." at "..v)
+          print("")
       end
+      print("")
+      
+      term.setTextColor(tc)
       
   elseif args[1] == "--help" then
       printUsage()
