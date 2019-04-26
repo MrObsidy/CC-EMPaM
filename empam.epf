@@ -1,6 +1,6 @@
 {
   ["name"] = "empam",
-  ["version"] = "0.1.1",
+  ["version"] = "1.0.0",
   ["description"] = "The EMPaM Package Manager.",
   ["dependencies"] = {
   
