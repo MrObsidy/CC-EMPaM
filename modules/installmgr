@@ -61,16 +61,35 @@ end
 function getInstalledPackage(package)
   local foundPackages = {}
   
-  for k, v in pairs(fs.list("/empam/empam_data/packages/")) do
-    local fc = fs.open("/empam/empam_data/packages/"..v, "r")
-    local parsedInfo = textutils.unserialize(fc.readAll())
-    fc.close()
-    if parsedInfo.name == package then
-      table.insert(foundPackages, parsedInfo)
+  
+  for k, v in pairs(getInstalledPackages()) do
+    
+    
+    
+    if v.name == package then
+      table.insert(foundPackages, v)
     end
   end
   
+  
+  
   return foundPackages
+  
+end
+
+function getInstalledPackages()
+  local installedPackages = {}
+  
+  for rv, ffile in pairs(fs.list("/empam/empam_data/packages/")) do
+    local fh = fs.open("/empam/empam_data/packages/"..ffile, "r")
+    local parsedInfo = textutils.unserialize(fh.readAll())
+    fh.close()
+    
+    table.insert(installedPackages, parsedInfo)
+    
+  end
+  
+  return installedPackages
   
 end
 
@@ -130,8 +149,6 @@ function registerInstallation(name, repo, ver, files)
     ["version"] = ver,
     ["files"] = targets,
   }
-  
-  if fs.exists("/empam/empam_data/packages/"..name.."_"..ver) then fs.delete("/empam/empam_data/packages/"..name.."_"..ver)
   
   local fh = fs.open("/empam/empam_data/packages/"..name.."_"..ver, "w")
   fh.write(textutils.serialize(cont))
