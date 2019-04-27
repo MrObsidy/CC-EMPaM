@@ -73,7 +73,7 @@ else
        term.clear()
     term.setCursorPos(1,1)
     print("This setup will finish your EMPaM installation.")
-    repomgr.addRepo("SYSTEMREPO", "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/repositories/systemrepo.repo")
+    repomgr.addRepo("SYSTEMREPO", "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/repositories/systemrepo.repo", true)
     local sysPacks = repomgr.getPackages("SYSTEMREPO")
     
 
@@ -385,6 +385,9 @@ else
       
       installmgr.registerInstallation(pname, choice.repo, pver, pfiles)
       print("Done!")
+      if pname == "empam" and choice.repo == "SYSTEMREPO" then
+        shell.run("/empam/empam finish-install")
+      end
       
   elseif args[1] == "--addrepo" then
       repomgr.addRepo(args[2], args[3])
