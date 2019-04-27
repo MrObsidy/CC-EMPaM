@@ -5,7 +5,6 @@
 
 local appBaseInfo = {
   ["author"] = "MrObsidy",
-  ["progVer"] = "",
   ["name"] = "EMPaM - Extensible Modular Packet Manager",
 }
 
@@ -458,9 +457,7 @@ else
         end
       end
       
-      appBaseInfo.progVer = empam_exe.version
-      
-      print("EMPaM Version "..appBaseInfo.progVer)
+      print("EMPaM Version "..empam_exe.version)
   else
       error("Unknown command. Try --help for a list of commands.")
   end
