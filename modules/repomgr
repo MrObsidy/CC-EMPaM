@@ -40,7 +40,7 @@ function addRepo(name, url, force)
     currRepoData = textutils.unserialize(fh.readAll())
     
     for k, v in pairs(currRepoData) do
-      if v.name == name and not force then
+      if v.name == name and force~= true then
         error("Repository already exists.")
       end
       if v.name == name and force then
