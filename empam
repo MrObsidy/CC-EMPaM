@@ -5,7 +5,7 @@
 
 local appBaseInfo = {
   ["author"] = "MrObsidy",
-  ["progVer"] = "1.0.0",
+  ["progVer"] = "",
   ["name"] = "EMPaM - Extensible Modular Packet Manager",
 }
 
@@ -448,6 +448,18 @@ else
           end
       end
   elseif args[1] == "--version" then
+      local installedEmpam = installmgr.getInstalledPackage("empam")
+      local empam_exe = {}
+      
+      for k, v in pairs(installedEmpam) do
+        if v.repo == "SYSTEMREPO" then
+          empam_exe = v
+          break
+        end
+      end
+      
+      appBaseInfo.progVer = empam_exe.version
+      
       print("EMPaM Version "..appBaseInfo.progVer)
   else
       error("Unknown command. Try --help for a list of commands.")
