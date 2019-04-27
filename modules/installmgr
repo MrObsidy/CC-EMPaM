@@ -9,10 +9,6 @@ function getPackageContents(url)
   return pkg_info.name, pkg_info.version, pkg_info.description, pkg_info.dependencies, pkg_info.files, pkg_info.requiredPlugins
 end
 
-function downloadFiles(filesTbl)
-  
-end
-
 local function addHandledDependency(dep)
   table.insert(handledDependencies, dep.url)
 end
