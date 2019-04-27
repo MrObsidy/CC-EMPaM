@@ -29,7 +29,7 @@ function getRepoURL(name)
   
 end
 
-function addRepo(name, url)
+function addRepo(name, url, force)
   
   if not name or not url then error("Missing name or url.") end
   
@@ -40,8 +40,11 @@ function addRepo(name, url)
     currRepoData = textutils.unserialize(fh.readAll())
     
     for k, v in pairs(currRepoData) do
-      if v.name == name then
+      if v.name == name and not force then
         error("Repository already exists.")
+      end
+      if v.name == name and force then
+        print("Force mode enabled. Repository already exists, however is being overwritten....")
       end
     end
     
