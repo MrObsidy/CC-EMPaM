@@ -79,8 +79,18 @@ else
 
     local pname, pver, pdesc, pdep, pfiles, pplugins = installmgr.getPackageContents(sysPacks.empam)
     
+      local installedEmpam = installmgr.getInstalledPackage("empam")
+      local empam_exe = {}
+      
+      for k, v in pairs(installedEmpam) do
+        if v.repo == "SYSTEMREPO" then
+          empam_exe = v
+          break
+        end
+      end
+    
     print("")
-    print("You are running EMPaM "..appBaseInfo.progVer)
+    print("You are running EMPaM "..empam_exe.version)
     print("The most up-to-date version of EMPaM is "..pver)
     print("Run empam --update empam if your install is outdated.") 
     print("")
