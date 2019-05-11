@@ -1,6 +1,5 @@
 {
   ["packages"] = {
     ["empam"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/empam.epf",
-    ["authorplugin"] = "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/repositories/plugins/authorplugin.epf"
   }
 }
