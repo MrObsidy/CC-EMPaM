@@ -13,7 +13,6 @@ local plugins = {}
 local args = {...}
 
 local function printUsage()
-    print("Welcome to EMPaM: "..appBaseInfo.name.." version "..appBaseInfo.progVer)
     print("You can press Ctrl-T at any time to abort")
     print("this help display.")
     io.read()
