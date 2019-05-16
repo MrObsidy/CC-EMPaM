@@ -12,47 +12,47 @@ local plugins = {}
 
 local args = {...}
 
-local function printUsage()
-    print("You can press Ctrl-T at any time to abort")
-    print("this help display.")
-    io.read()
-    print("Commands:")
-    print("--help: print this help.")
-    print("--version: print the version.")
-    print("--install: install a package.")
-    print("--uninstall: uninstall a package.")
-    print("--update: update a package")
-    print("--addrepo: add a repository.")
-    print("--removerepo: remove a repository.")
-    print("--listrepos: list all repositories.")
-    print("--listpackages: list packages.")
-    print("--getother: get other programs, EXPERIMENTAL!")
-    print("--plugins: for a list of plugins")
-    print("--plugininfo: for info regarding a plugin")
-    print("--plugin: to execute plugin commands.")
-    io.read()
-    print("--install <package> installs <package> to your system. If multiple packages with that name exist, EMPaM will prompt you to tell from which repository you wish to install <package>.")
-    io.read()
-    print("--uninstall <package> uninstalls a previously installed package.")
-    io.read()
-    print("--update <package> updates package <package>. If multiple packages with that name are installed, EMPaM will prompt you to tell which one you mean. Also, if <package> is up to date, will ask you if you want to install anyways.")
-    io.read()
-    print("--addrepo <name> <url> adds a repository with the URL <url> to your repolist with the name <name>. Check the forum post to see how to properly set up repositories.")
-    io.read()
-    print("--removerepo <name> removes a repository from your repolist.")
-    io.read()
-    print("--listrepos lists all repositories in /empam_data/repositories_list.")
-    io.read()
-    print("--listpackages <repo> lists all packages in <repo>.")
-    io.read()
-    print("--getother <url> <path> installs the resource at <url> to <path>.")
-    io.read()
-    print("--plugins lists all plugins loaded from /empam/modules/plugins/.")
-    io.read()
-    print("--plugininfo <name> provides info for the plugin <name>.")
-    io.read()
-    print("--plugin <name> <command> executes the plugin command <command> of the plugin <plugin>.")
-    io.read()
+local function getUsage()
+
+    local returnTable = {}
+    
+    local commandTable = {}
+    
+  
+      table.insert( commandTable, "--help: print this help.")
+      table.insert( commandTable, "--version: print the version.")
+      table.insert( commandTable, "--install: install a package.")
+      table.insert( commandTable, "--uninstall: uninstall a package.")
+      table.insert( commandTable, "--update: update a package")
+      table.insert( commandTable, "--addrepo: add a repository.")
+      table.insert( commandTable, "--removerepo: remove a repository.")
+      table.insert( commandTable, "--listrepos: list all repositories.")
+      table.insert( commandTable, "--listpackages: list packages.")
+      table.insert( commandTable, "--getother: get other programs, EXPERIMENTAL!")
+      table.insert( commandTable, "--plugins: for a list of plugins")
+      table.insert( commandTable, "--plugininfo: for info regarding a plugin")
+      table.insert( commandTable, "--plugin: to execute plugin commands.")
+    
+    table.insert(returnTable, commandTable)
+    
+    local fullTable = {}
+    
+     table.insert( fullTable, "--install <package> installs <package> to your system. If multiple packages with that name exist, EMPaM will prompt you to tell from which repository you wish to install <package>.")
+     table.insert( fullTable, "--uninstall <package> uninstalls a previously installed package.")
+     table.insert( fullTable, "--update <package> updates package <package>. If multiple packages with that name are installed, EMPaM will prompt you to tell which one you mean. Also, if <package> is up to date, will ask you if you want to install anyways.")
+     table.insert( fullTable, "--addrepo <name> <url> adds a repository with the URL <url> to your repolist with the name <name>. Check the forum post to see how to properly set up repositories.")
+     table.insert( fullTable, "--removerepo <name> removes a repository from your repolist.")
+     table.insert( fullTable, "--listrepos lists all repositories in /empam_data/repositories_list.")
+     table.insert( fullTable, "--listpackages <repo> lists all packages in <repo>.")
+     table.insert( fullTable, "--getother <url> <path> installs the resource at <url> to <path>.")
+     table.insert( fullTable, "--plugins lists all plugins loaded from /empam/modules/plugins/.")
+     table.insert( fullTable, "--plugininfo <name> provides info for the plugin <name>.")
+     table.insert( fullTable, "--plugin <name> <command> executes the plugin command <command> of the plugin <plugin>.")
+
+    table.insert(returnTable, fullTable)
+    
+    return returnTable
+
 end
 
 --load APIs
