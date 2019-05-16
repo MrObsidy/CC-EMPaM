@@ -380,63 +380,67 @@ else
         write(v.name.."("..v.repo..")"..", ")
       end
       
+      print("")
       print("These are "..#outdatedpackages.." new packages. Do you comply? (Y/N) ")
       local conf = io.read()
       
       if string.lower(conf) ~= 'y' then error("Updating aborted.") end
       
-      for k, v in pairs(outdatedpackages) do 
-        print("Updating package "..v.name)
+       for k, v in pairs(outdatedpackages) do 
+          print("Updating package "..v.name)
         
-        write("Receiving package data... ")
-        local pname, pver, pdesc, pdep, pfiles, preqPl = installmgr.getPackageContents(v.url)
-        print("Done.")
+         write("Receiving package data... ")
+         
+         local pack_url = repomgr.getPackages(v.repo)
+        local pack = pack_url[v.name]         
+        local pname, pver, pdesc, pdep, pfiles, preqPl = installmgr.getPackageContents(pack)
+          print("Done.")
         
-        write("Uninstalling old files... ")
-        for key, file in pairs(v.files) do
-          fs.delete(file)
+         write("Uninstalling old files... ")
+          for key, file in pairs(v.files) do
+           fs.delete(file)
+          end
+          print("Done.")
+          write("Unregistering old registration... ")
+         fs.delete("/empam/empam_data/"..v.name.."_"..v.version)
+         print("Done.")
+        
+         write("Downloading files... ")
+        
+          local dlFiles = installmgr.downloadFiles(pfiles)
+         print("Done.")
+        
+          local conflicts = installmgr.checkInstallation(dlFiles) 
+    
+     if #conflicts ~= 0 then
+      print("These file conflicts were found:")
+       for k, v in pairs(conflicts) do
+         print("File "..v.file..", source: "..v.from)
         end
-        print("Done.")
-        write("Unregistering old registration... ")
-        fs.delete("/empam/empam_data/"..v.name.."_"..v.version)
-        print("Done.")
-        
-        write("Downloading files... ")
-        
-        local dlFiles = installmgr.downloadFiles(pfiles)
-        print("Done.")
-        
-        local conflicts = installmgr.checkInstallation(dlFiles) 
     
-    if #conflicts ~= 0 then
-     print("These file conflicts were found:")
-     for k, v in pairs(conflicts) do
-       print("File "..v.file..", source: "..v.from)
+       print("")
+    
+       print("Do you wish to continue and overwrite these files? (Y/N): ")
+        local cdo = io.read()
+    
+      if string.lower(cdo) ~= 'y' then
+         error("Installation aborted. Files already existed.")
+       end
+    
+       else
+        print("No conflicts were found.")
       end
-    
-     print("")
-    
-     print("Do you wish to continue and overwrite these files? (Y/N): ")
-      local cdo = io.read()
-    
-     if string.lower(cdo) ~= 'y' then
-       error("Installation aborted. Files already existed.")
-      end
-    
-    else
-      print("No conflicts were found.")
-    end
         
                 
-        write("Installing files... ")
+          write("Installing files... ")
         
-        installmgr.installFiles(dlFiles)
-        print("Done.")
+         installmgr.installFiles(dlFiles)
+         print("Done.")
         
-        write("Registering installation.. ")
-           installmgr.registerInstallation(pname, v.repo, pver, pfiles)
-        print("Done updating package "..pname)
-      end
+           write("Registering installation.. ")
+             installmgr.registerInstallation(pname, v.repo, pver, pfiles)
+          print("Done updating package "..pname)
+        end
       
       print("Done updating packages!")
       
