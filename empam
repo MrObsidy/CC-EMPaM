@@ -54,42 +54,7 @@ plugins = pluginmgr.loadPlugins(plugins)
 if #args == 0 then
     error("No command specified. Try empam --help for a list of commands.")
 else
-  if args[1] == "finish-install" then
-       term.clear()
-    term.setCursorPos(1,1)
-    print("This setup will finish your EMPaM installation.")
-    repomgr.addRepo("SYSTEMREPO", "https://raw.githubusercontent.com/MrObsidy/CC-EMPaM/master/repositories/systemrepo.repo", true)
-    local sysPacks = repomgr.getPackages("SYSTEMREPO")
-    
-
-
-    local pname, pver, pdesc, pdep, pfiles, pplugins = installmgr.getPackageContents(sysPacks.empam)
-    
-    print("")
-    print("You are running "..pver)
-    print("")
-    
-    installmgr.registerInstallation(pname, "SYSTEMREPO", pver, pfiles)
-    
-    sysPacks.empam = nil
-    
-    print("Now installing all other packages from SYSTEMRPO....")
-    
-    for k, v in pairs(sysPacks) do
-      local pname, pver, pdesc, pdep, pfiles, pplugins = installmgr.getPackageContents(v)
-      
-      local files = installmgr.downloadFiles(pfiles)
-      installmgr.installFiles(files)
-      
-      installmgr.registerInstallation(pname, "SYSTEMREPO", pver, pfiles) 
-      
-    end
-    
-    print("EMPaM will now reboot your system. Once the system is rebooted, you are ready to go!")
-    sleep(5)
-    os.reboot()
-    
-  elseif args[1] == "--install" then
+  if args[1] == "--install" then
     local foundpackages = {}
       
     for k, v in pairs(repomgr.getRepos()) do
@@ -282,7 +247,7 @@ else
       
   elseif args[1] == "--update" then
       
-      if not args[2] then error("No package specified.") end
+      if not args[2] then shell.run("/empam/empam --updateall") end
       
       print("Checking for updates for package "..args[2])
 
@@ -360,15 +325,117 @@ else
       local dlf = installmgr.downloadFiles(pfiles)
       print("Done. Installing files...")
       
+      
+      local conflicts = installmgr.checkInstallation(dlf) 
+  
+    if #conflicts ~= 0 then
+     print("These file conflicts were found:")
+     for k, v in pairs(conflicts) do
+       print("File "..v.file..", source: "..v.from)
+      end
+    
+     print("")
+    
+     print("Do you wish to continue and overwrite these files? (Y/N): ")
+      local cdo = io.read()
+    
+     if string.lower(cdo) ~= 'y' then
+       error("Installation aborted. Files already existed.")
+      end
+    
+    else
+      print("No conflicts were found.")
+    end
     
       installmgr.installFiles(dlf)
       print("Done installing. Registering installation...")  
       
       installmgr.registerInstallation(pname, choice.repo, pver, pfiles)
       print("Done!")
-      if pname == "empam" and choice.repo == "SYSTEMREPO" then
-        shell.run("/empam/empam finish-install")
+      
+  elseif args[1] == "--updateall" then
+      local outdatedpackages = {}
+      
+      print("Checking for updates...")
+      
+      for k,v in pairs(installmgr.getInstalledPackages()) do
+        local pack_url_repos = repomgr.getPackages(v.repo)
+        local pack = pack_url_repos[v.name]
+        
+        local pname, pver = installmgr.getPackageContents(pack)
+        
+        if v.version ~= pver then
+          table.insert(outdatedpackages, v)
+        end
       end
+      
+      if #outdatedpackages == 0 then error("All packages are up to date.")
+      
+      print("These packages are outdated and need to be updated: ")
+      
+      for k, v in pairs(outdatedpackages) do
+        write(v.name.."("..v.repo..")"..", ")
+      end
+      
+      print("These are "..#outdatedpackages.." new packages. Do you comply? (Y/N) ")
+      local conf = io.read()
+      
+      if string.lower(conf) ~= 'y' then error("Updating aborted.") end
+      
+      for k, v in pairs(outdatedpackages) do 
+        print("Updating package "..v.name)
+        
+        write("Receiving package data... ")
+        local pname, pver, pdesc, pdep, pfiles, preqPl = installmgr.getPackageContents(v.url)
+        print("Done.")
+        
+        write("Uninstalling old files... ")
+        for key, file in pairs(v.files) do
+          fs.delete(file)
+        end
+        print("Done.")
+        write("Unregistering old registration... ")
+        fs.delete("/empam/empam_data/"..v.name.."_"..v.version)
+        print("Done.")
+        
+        write("Downloading files... ")
+        
+        local dlFiles = installmgr.downloadFiles(pfiles)
+        print("Done.")
+        
+        local conflicts = installmgr.checkInstallation(dlFiles) 
+    
+    if #conflicts ~= 0 then
+     print("These file conflicts were found:")
+     for k, v in pairs(conflicts) do
+       print("File "..v.file..", source: "..v.from)
+      end
+    
+     print("")
+    
+     print("Do you wish to continue and overwrite these files? (Y/N): ")
+      local cdo = io.read()
+    
+     if string.lower(cdo) ~= 'y' then
+       error("Installation aborted. Files already existed.")
+      end
+    
+    else
+      print("No conflicts were found.")
+    end
+        
+                
+        write("Installing files... ")
+        
+        installmgr.installFiles(dlFiles)
+        print("Done.")
+        
+        write("Registering installation.. ")
+           installmgr.registerInstallation(pname, v.repo, pver, pfiles)
+        print("Done updating package "..pname)
+      end
+      
+      print("Done updating packages!")
       
   elseif args[1] == "--addrepo" then
       repomgr.addRepo(args[2], args[3])
