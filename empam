@@ -369,7 +369,7 @@ else
         end
       end
       
-      if #outdatedpackages == 0 then error("All packages are up to date.")
+      if #outdatedpackages == 0 then error("All packages are up to date.") end
       
       print("These packages are outdated and need to be updated: ")
       
