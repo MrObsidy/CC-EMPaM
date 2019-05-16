@@ -12,46 +12,33 @@ local plugins = {}
 
 local args = {...}
 
-local function getUsage()
-
-    local returnTable = {}
-    
-    local commandTable = {}
-    
+local function printHelp()
   
-      table.insert( commandTable, "--help: print this help.")
-      table.insert( commandTable, "--version: print the version.")
-      table.insert( commandTable, "--install: install a package.")
-      table.insert( commandTable, "--uninstall: uninstall a package.")
-      table.insert( commandTable, "--update: update a package")
-      table.insert( commandTable, "--addrepo: add a repository.")
-      table.insert( commandTable, "--removerepo: remove a repository.")
-      table.insert( commandTable, "--listrepos: list all repositories.")
-      table.insert( commandTable, "--listpackages: list packages.")
-      table.insert( commandTable, "--getother: get other programs, EXPERIMENTAL!")
-      table.insert( commandTable, "--plugins: for a list of plugins")
-      table.insert( commandTable, "--plugininfo: for info regarding a plugin")
-      table.insert( commandTable, "--plugin: to execute plugin commands.")
+      print( commandTable, "--help: print this help.")
+      print( commandTable, "--version: print the version.")
+      print( commandTable, "--install: install a package.")
+      print( commandTable, "--uninstall: uninstall a package.")
+      print( commandTable, "--update: update a package")
+      print( commandTable, "--addrepo: add a repository.")
+      print( commandTable, "--removerepo: remove a repository.")
+      print( commandTable, "--listrepos: list all repositories.")
+      print( commandTable, "--listpackages: list packages.")
+      print( commandTable, "--getother: get other programs, EXPERIMENTAL!")
+      print( commandTable, "--plugins: for a list of plugins")
+      print( commandTable, "--plugininfo: for info regarding a plugin")
+      print( commandTable, "--plugin: to execute plugin commands.")
     
-    table.insert(returnTable, commandTable)
-    
-    local fullTable = {}
-    
-     table.insert( fullTable, "--install <package> installs <package> to your system. If multiple packages with that name exist, EMPaM will prompt you to tell from which repository you wish to install <package>.")
-     table.insert( fullTable, "--uninstall <package> uninstalls a previously installed package.")
-     table.insert( fullTable, "--update <package> updates package <package>. If multiple packages with that name are installed, EMPaM will prompt you to tell which one you mean. Also, if <package> is up to date, will ask you if you want to install anyways.")
-     table.insert( fullTable, "--addrepo <name> <url> adds a repository with the URL <url> to your repolist with the name <name>. Check the forum post to see how to properly set up repositories.")
-     table.insert( fullTable, "--removerepo <name> removes a repository from your repolist.")
-     table.insert( fullTable, "--listrepos lists all repositories in /empam_data/repositories_list.")
-     table.insert( fullTable, "--listpackages <repo> lists all packages in <repo>.")
-     table.insert( fullTable, "--getother <url> <path> installs the resource at <url> to <path>.")
-     table.insert( fullTable, "--plugins lists all plugins loaded from /empam/modules/plugins/.")
-     table.insert( fullTable, "--plugininfo <name> provides info for the plugin <name>.")
-     table.insert( fullTable, "--plugin <name> <command> executes the plugin command <command> of the plugin <plugin>.")
-
-    table.insert(returnTable, fullTable)
-    
-    return returnTable
+     print( fullTable, "--install <package> installs <package> to your system. If multiple packages with that name exist, EMPaM will prompt you to tell from which repository you wish to install <package>.")
+     print( fullTable, "--uninstall <package> uninstalls a previously installed package.")
+     print( fullTable, "--update <package> updates package <package>. If multiple packages with that name are installed, EMPaM will prompt you to tell which one you mean. Also, if <package> is up to date, will ask you if you want to install anyways.")
+     print( fullTable, "--addrepo <name> <url> adds a repository with the URL <url> to your repolist with the name <name>. Check the forum post to see how to properly set up repositories.")
+     print( fullTable, "--removerepo <name> removes a repository from your repolist.")
+     print( fullTable, "--listrepos lists all repositories in /empam_data/repositories_list.")
+     print( fullTable, "--listpackages <repo> lists all packages in <repo>.")
+     print( fullTable, "--getother <url> <path> installs the resource at <url> to <path>.")
+     print( fullTable, "--plugins lists all plugins loaded from /empam/modules/plugins/.")
+     print( fullTable, "--plugininfo <name> provides info for the plugin <name>.")
+     print( fullTable, "--plugin <name> <command> executes the plugin command <command> of the plugin <plugin>.")
 
 end
 
