@@ -247,7 +247,10 @@ else
       
   elseif args[1] == "--update" then
       
-      if not args[2] then shell.run("/empam/empam --updateall") end
+      if not args[2] then 
+        shell.run("/empam/empam --updateall") 
+        return
+      end
       
       print("Checking for updates for package "..args[2])
 
