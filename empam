@@ -402,7 +402,7 @@ else
           end
           print("Done.")
           write("Unregistering old registration... ")
-         fs.delete("/empam/empam_data/"..v.name.."_"..v.version)
+         fs.delete("/empam/empam_data/packages/"..v.name.."_"..v.version)
          print("Done.")
         
          write("Downloading files... ")
