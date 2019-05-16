@@ -1,3 +1,15 @@
-function printFullMode(text, fullmode)
-  if fullmode then print(text) end
+local printFunction
+
+function setPrintFunction(fun)
+  printFunction = fun
+end
+
+function screenWrite(text)
+  if printFunction then
+    printFunction(text)
+  end
+end
+
+function reset()
+  printFunction = nil
 end
