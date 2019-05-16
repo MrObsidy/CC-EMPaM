@@ -452,7 +452,8 @@ else
         end
       end
       
-      print("EMPaM Version "..empam_exe.version)
+      print("EMPaM Version "..empam_exe.version.." by MrObsidy24.")
+      print("EMPaM is versioned under GNU GPLv3.")
   else
       error("Unknown command. Try --help for a list of commands.")
   end
